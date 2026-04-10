@@ -48,7 +48,7 @@ export const useStudioState = () => {
         config, updateConfig, handleImage,
         assets, playlist, setPlaylist, activeIdx,
         isPlaying, setIsPlaying,
-        isRecording, recordProgress, isAdjusting,
+        isRecording, recordProgress, isAdjusting, setIsAdjusting,
         undo, redo, canUndo, canRedo, resetToDefault, resetField,
         totalDuration: trackDuration, 
         currentTime: trackTime, 

@@ -4,8 +4,8 @@ import { __SYS_IDENTITY__, CORE_LOGO_DATA } from '../constants/branding';
 interface HeaderProps {
     format: 'LANDSCAPE' | 'PORTRAIT';
     updateConfig: (k: string, v: any) => void;
-    setSidebarTab: (tab: 'DESIGN' | 'EXPORT' | 'PRESETS' | 'ENGINE') => void;
-    activeTab: 'DESIGN' | 'EXPORT' | 'PRESETS' | 'ENGINE';
+    setSidebarTab: (tab: 'DESIGN' | 'EXPORT' | 'PRESETS' | 'ENGINE' | 'FX') => void;
+    activeTab: 'DESIGN' | 'EXPORT' | 'PRESETS' | 'ENGINE' | 'FX';
     undo: () => void;
     redo: () => void;
     canUndo: boolean;

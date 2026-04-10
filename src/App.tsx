@@ -11,7 +11,7 @@ const App: React.FC = () => {
         config, updateConfig, handleImage,
         assets, playlist, setPlaylist, activeIdx,
         isPlaying, setIsPlaying,
-        isRecording, recordProgress, isAdjusting,
+        isRecording, recordProgress, isAdjusting, setIsAdjusting,
         undo, redo, canUndo, canRedo, resetToDefault,
         totalDuration, currentTime, duration,
         audioRef, wmAudioRef, analyser,
@@ -35,7 +35,7 @@ const App: React.FC = () => {
         }
     }, []);
 
-    const [sidebarTab, setSidebarTab] = React.useState<'DESIGN' | 'EXPORT' | 'PRESETS' | 'ENGINE'>('PRESETS')
+    const [sidebarTab, setSidebarTab] = React.useState<'DESIGN' | 'EXPORT' | 'PRESETS' | 'ENGINE' | 'FX'>('PRESETS')
 
     // KEYBOARD SHORTCUTS (PRO WORKFLOW)
     React.useEffect(() => {
@@ -104,6 +104,7 @@ const App: React.FC = () => {
                     totalTime={totalDuration}
                     activeTab={sidebarTab}
                     setActiveTab={setSidebarTab}
+                    setIsAdjusting={setIsAdjusting}
                 />
             </div>
             

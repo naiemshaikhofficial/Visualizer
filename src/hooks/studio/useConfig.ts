@@ -104,6 +104,18 @@ const DEFAULT_CONFIG = {
     // Custom Text Layers
     text_layers: [],
 
+    // Cinematic FX (Post-Processing)
+    fx_vhs: 0,
+    fx_grain: 0,
+    fx_chroma: 0,
+    fx_scanlines: false,
+    fx_vignette_color: '#000000',
+
+    // Motion Engine
+    m_drift: 0,
+    m_zoom_pulse: 0,
+    m_rotation_drift: 0,
+
     // Global FX & Env
     vignette: 0.5,
     accent: ACCENT_COLOR, 

@@ -5,6 +5,8 @@ import { drawParticles } from '../render/layers/particles'
 import { drawCover } from '../render/layers/cover'
 import { drawOverlay } from '../render/layers/overlay'
 import { drawGuides } from '../render/layers/guides'
+import { applyMotionEngine, endMotionEngine } from '../render/layers/motion'
+import { drawPostProcessing } from '../render/layers/fx'
 
 interface VisualizerProps {
     config: any;
@@ -102,8 +104,11 @@ const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analys
             ctx.fillStyle = grd; ctx.fillRect(0, 0, w, h);
         }
 
+        // MOTION & CAMERA (WRAPS VISUALS)
+        applyMotionEngine(ctx, w, h, renderConfig, bass, time);
+
         // 2. PARTICLES (React to dynamic color)
-        drawParticles(ctx, w, h, particlesRef.current, renderConfig, bass, sx, sy);
+        drawParticles(ctx, w, h, particlesRef.current, renderConfig, bass, sx, sy, time);
 
         // 3. PERSPECTIVE TRANSFORM (Apply 3D tilt to Visualizer, Cover & Overlay)
         ctx.save();
@@ -122,9 +127,13 @@ const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analys
         drawCover(ctx, w, h, cover, renderConfig, bass, beat, time, sx, sy);
 
         // TEXT & SOCIAL OVERLAYS
-        drawOverlay(ctx, w, h, assets, renderConfig, bass, sx, sy);
+        drawOverlay(ctx, w, h, assets, renderConfig, bass, sx, sy, time);
         
         ctx.restore();
+
+        // END MOTION & APPLY POST-FX
+        endMotionEngine(ctx);
+        drawPostProcessing(ctx, w, h, renderConfig, bass, time);
 
         // 4. ALIGNMENT GUIDES (TOP LAYER)
         drawGuides(ctx, w, h, { ...config, show_guides: config.show_guides || isAdjusting });
