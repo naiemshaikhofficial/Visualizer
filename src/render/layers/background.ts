@@ -28,11 +28,35 @@ export const drawBackground = (ctx: CanvasRenderingContext2D, w: number, h: numb
             shakeY += Math.cos(driftSpeed) * 50;
         }
 
-        const s = Math.max(w/targetBg.width, h/targetBg.height) * zoom;
+        // Bass Shake Intensity
+        const shakePower = config.bg_shake_power !== undefined ? config.bg_shake_power : 1.0;
+        shakeX += sx * shakePower;
+        shakeY += sy * shakePower;
+
+        const s = Math.max(w/targetBg.width, h/targetBg.height) * zoom * (config.bg_scale_adjust || 1);
         
         // 3. Render
-        ctx.translate(w/2 + shakeX, h/2 + shakeY); 
+        const bx = (config.bg_shift_x || 0);
+        const by = (config.bg_shift_y || 0);
+        
+        ctx.translate(w/2 + shakeX + bx, h/2 + shakeY + by); 
         ctx.scale(s, s); 
+
+        // Chromatic Aberration (RGB Split) on Bass
+        const chroma = (config.bg_chroma_power || 0) * bass * 20;
+        if (chroma > 0.5) {
+            ctx.globalCompositeOperation = 'screen';
+            ctx.save(); ctx.translate(-chroma, 0); ctx.drawImage(targetBg, -targetBg.width/2, -targetBg.height/2); ctx.restore();
+            ctx.save(); ctx.translate(chroma, 0); ctx.drawImage(targetBg, -targetBg.width/2, -targetBg.height/2); ctx.restore();
+            ctx.globalCompositeOperation = 'source-over';
+        }
+
+        // Strobe Effect
+        const strobe = (config.bg_strobe_power || 0) * Math.random() * bass;
+        if (strobe > 0.1) {
+            ctx.globalAlpha *= (1 - strobe);
+        }
+
         ctx.drawImage(targetBg, -targetBg.width/2, -targetBg.height/2);
         
         ctx.restore();

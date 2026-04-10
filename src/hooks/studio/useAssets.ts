@@ -6,12 +6,13 @@ export const useAssets = (wmAudioRef: React.RefObject<HTMLAudioElement>) => {
 
     useEffect(() => {
         const hydrate = async () => {
-            // Force load official logo
+            // Force load official software logo
+            // This is different from the user's "Artist Logo"
             const officialLogo = new Image();
-            officialLogo.src = '/logo.png';
-            officialLogo.onload = () => setAssets((prev: any) => ({ ...prev, logo: officialLogo }));
+            officialLogo.src = '/app_logo.png';
+            officialLogo.onload = () => setAssets((prev: any) => ({ ...prev, app_branding: officialLogo }));
 
-            const keys = ['cover', 'background', 'watermark'];
+            const keys = ['cover', 'logo', 'background', 'watermark'];
             for (const key of keys) {
                 const b = await getAsset(key);
                 if (b && b instanceof Blob) {

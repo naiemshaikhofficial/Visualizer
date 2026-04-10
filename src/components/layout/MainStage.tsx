@@ -11,19 +11,21 @@ interface MainStageProps {
     playlist: File[];
     isRecording: boolean;
     recordProgress: number;
+    isAdjusting: boolean;
     currentTime: number;
     duration: number;
     audioRef: React.RefObject<HTMLAudioElement>;
     togglePlay: () => void;
     startExport: () => void;
+    stopExport: () => void;
     seek: (t: number) => void;
     skipNext: () => void;
     skipPrev: () => void;
 }
 
 const MainStage: React.FC<MainStageProps> = ({
-    config, isPlaying, analyser, assets, activeIdx, playlist, isRecording, recordProgress, 
-    currentTime, duration, audioRef, togglePlay, startExport, seek, skipNext, skipPrev
+    config, isPlaying, analyser, assets, activeIdx, playlist, isRecording, recordProgress, isAdjusting,
+    currentTime, duration, audioRef, togglePlay, startExport, stopExport, seek, skipNext, skipPrev
 }) => {
     return (
         <div className="flex-1 flex flex-col gap-3 overflow-hidden px-1">
@@ -36,6 +38,7 @@ const MainStage: React.FC<MainStageProps> = ({
                 playlistLength={playlist.length}
                 isRecording={isRecording}
                 recordProgress={recordProgress}
+                isAdjusting={isAdjusting}
             />
             <MediaControls 
                 isPlaying={isPlaying}
@@ -46,6 +49,7 @@ const MainStage: React.FC<MainStageProps> = ({
                 audioRef={audioRef}
                 onTogglePlay={togglePlay}
                 onStartExport={startExport}
+                onStopExport={stopExport}
                 onSeek={seek}
                 onNext={skipNext}
                 onPrev={skipPrev}

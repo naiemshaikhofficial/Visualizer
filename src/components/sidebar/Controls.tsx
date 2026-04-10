@@ -18,9 +18,21 @@ export const ControlCard: React.FC<{title: string, icon: any, children: React.Re
     </div>
 );
 
-export const ProSlider: React.FC<{label: string, value: any, max: number, min?: number, step?: number, onChange: (v: number) => void, suffix?: string, icon?: any}> = ({ label, value, max, min = 0, step, onChange, suffix = '', icon: Icon }) => {
+export const ProSlider: React.FC<{
+    label: string, 
+    value: any, 
+    max: number, 
+    min?: number, 
+    step?: number, 
+    onChange: (v: number) => void, 
+    onActionStart?: () => void,
+    onActionEnd?: () => void,
+    suffix?: string, 
+    icon?: any
+}> = ({ label, value, max, min = 0, step, onChange, onActionStart, onActionEnd, suffix = '', icon: Icon }) => {
     const [localValue, setLocalValue] = useState(value);
     useEffect(() => { setLocalValue(value); }, [value]);
+
     const handleCommit = (val: number) => { 
         let finalVal = val; 
         if (isNaN(finalVal)) finalVal = min; 
@@ -41,6 +53,8 @@ export const ProSlider: React.FC<{label: string, value: any, max: number, min?: 
                     <input 
                         type="text" 
                         value={localValue} 
+                        onFocus={onActionStart}
+                        onBlur={() => { handleCommit(parseFloat(localValue as string)); onActionEnd?.(); }} 
                         onChange={(e) => { 
                             const val = e.target.value; 
                             if (val === '' || /^\d*\.?\d*$/.test(val)) { 
@@ -49,8 +63,9 @@ export const ProSlider: React.FC<{label: string, value: any, max: number, min?: 
                                 if (!isNaN(numeric) && numeric >= min && numeric <= max) onChange(numeric); 
                             } 
                         }} 
-                        onBlur={() => handleCommit(parseFloat(localValue as string))} 
-                        onKeyDown={(e) => { if(e.key === 'Enter') handleCommit(parseFloat(localValue as string)) }} 
+                        onKeyDown={(e) => { 
+                            if(e.key === 'Enter') { handleCommit(parseFloat(localValue as string)); (e.target as any).blur(); } 
+                        }} 
                         className="w-16 bg-transparent border-b border-white/10 hover:border-white focus:border-white text-right px-1 py-0.5 text-[11px] font-mono text-white font-black outline-none transition-colors" 
                     />
                     <span className="text-[7px] font-mono font-black text-white/20 uppercase">{suffix}</span>
@@ -63,6 +78,10 @@ export const ProSlider: React.FC<{label: string, value: any, max: number, min?: 
                     max={max} 
                     step={step || (max > 10 ? 1 : 0.01)} 
                     value={parseFloat(localValue as string) || 0} 
+                    onMouseDown={onActionStart}
+                    onMouseUp={onActionEnd}
+                    onTouchStart={onActionStart}
+                    onTouchEnd={onActionEnd}
                     onChange={(e) => onChange(parseFloat(e.target.value))} 
                     className="w-full h-1 bg-white/5 rounded-full appearance-none cursor-pointer accent-white transition-all overflow-hidden" 
                 />
@@ -71,13 +90,15 @@ export const ProSlider: React.FC<{label: string, value: any, max: number, min?: 
     );
 };
 
-export const ProInput: React.FC<{label: string, value: string, placeholder?: string, onChange: (v: string) => void}> = ({ label, value, placeholder, onChange }) => (
+export const ProInput: React.FC<{label: string, value: string, placeholder?: string, onChange: (v: string) => void, onActionStart?: () => void, onActionEnd?: () => void}> = ({ label, value, placeholder, onChange, onActionStart, onActionEnd }) => (
     <div className="space-y-3">
         <span className="text-[8px] font-mono font-bold uppercase tracking-widest text-white/30 px-1">{label}</span>
         <div className="relative group/input">
             <input 
                 type="text" 
                 value={value} 
+                onFocus={onActionStart}
+                onBlur={onActionEnd}
                 onChange={(e) => onChange(e.target.value)} 
                 className="w-full bg-white/5 border-[1.5px] border-white/10 rounded-2xl px-5 py-4 text-[11px] font-black focus:bg-white/10 focus:border-white outline-none transition-all placeholder:text-white/10" 
                 placeholder={placeholder || "TYPE_HERE..."} 

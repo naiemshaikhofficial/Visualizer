@@ -1,24 +1,59 @@
-import { Youtube, Instagram, Minus, Square, X } from 'lucide-react';
-import { APP_IDENTITY } from '../constants/branding';
+import { Youtube, Instagram, Minus, Square, X, RotateCcw, Undo2, Redo2 } from 'lucide-react';
+import { __SYS_IDENTITY__, CORE_LOGO_DATA } from '../constants/branding';
 
 interface HeaderProps {
     format: 'LANDSCAPE' | 'PORTRAIT';
     updateConfig: (k: string, v: any) => void;
     setSidebarTab: (tab: 'DESIGN' | 'EXPORT' | 'PRESETS' | 'ENGINE') => void;
     activeTab: 'DESIGN' | 'EXPORT' | 'PRESETS' | 'ENGINE';
+    undo: () => void;
+    redo: () => void;
+    canUndo: boolean;
+    canRedo: boolean;
+    reset: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ format, updateConfig, setSidebarTab, activeTab }) => {
+const Header: React.FC<HeaderProps> = ({ 
+    format, updateConfig, setSidebarTab, activeTab, 
+    undo, redo, canUndo, canRedo, reset 
+}) => {
     return (
         <div className="flex items-center justify-between mb-3 shrink-0 px-6 py-4 border-b border-white/10 bg-black/80 backdrop-blur-3xl drag-region">
-            {/* LEFT: APP BRANDING (LOCKED) */}
-            <div className="flex items-center gap-4 w-1/3 no-drag">
-                <div className="h-10 w-10 rounded-full bg-white flex items-center justify-center p-2 shadow-[0_0_20px_rgba(255,255,255,0.2)]">
-                    <img src="/logo.png" alt="VS" className="h-full w-full object-contain brightness-0" />
+            {/* LEFT: APP BRANDING & HISTORY */}
+            <div className="flex items-center gap-8 w-1/3 no-drag">
+                <div className="flex items-center gap-4">
+                    <div className="h-10 w-10 flex items-center justify-center p-1">
+                        <img src={CORE_LOGO_DATA} alt="VS" className="h-full w-full object-contain" />
+                    </div>
+                    <div className="hidden md:block">
+                        <p className="text-[10px] font-mono font-black tracking-widest leading-none">{__SYS_IDENTITY__.n}</p>
+                    </div>
                 </div>
-                <div className="hidden md:block">
-                    <p className="text-[10px] font-mono font-black tracking-widest leading-none">{APP_IDENTITY.NAME}</p>
-                    <p className="text-[7px] font-mono text-white/40 uppercase tracking-[0.3em] mt-1">{APP_IDENTITY.SUBTEXT}</p>
+
+                <div className="flex items-center gap-2 pl-6 border-l border-white/10">
+                    <button 
+                        onClick={undo} 
+                        disabled={!canUndo} 
+                        title="Undo (Ctrl+Z)"
+                        className={`p-2 rounded-lg transition-all ${canUndo ? 'text-white hover:bg-white/10' : 'text-white/5 cursor-not-allowed'}`}
+                    >
+                        <Undo2 size={16} />
+                    </button>
+                    <button 
+                        onClick={redo} 
+                        disabled={!canRedo} 
+                        title="Redo (Ctrl+Y)"
+                        className={`p-2 rounded-lg transition-all ${canRedo ? 'text-white hover:bg-white/10' : 'text-white/5 cursor-not-allowed'}`}
+                    >
+                        <Redo2 size={16} />
+                    </button>
+                    <button 
+                        onClick={() => { if(confirm("REALLY RESET EVERYTHING?")) reset() }}
+                        className="p-2 text-white/20 hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all ml-2"
+                        title="Global Factory Reset"
+                    >
+                        <RotateCcw size={16} />
+                    </button>
                 </div>
             </div>
 

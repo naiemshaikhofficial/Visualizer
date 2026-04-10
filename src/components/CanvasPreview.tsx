@@ -11,6 +11,7 @@ interface CanvasPreviewProps {
     playlistLength: number;
     isRecording: boolean;
     recordProgress: number;
+    isAdjusting: boolean;
 }
 
 const CanvasPreview: React.FC<CanvasPreviewProps> = ({
@@ -21,7 +22,8 @@ const CanvasPreview: React.FC<CanvasPreviewProps> = ({
     activeIdx,
     playlistLength,
     isRecording,
-    recordProgress
+    recordProgress,
+    isAdjusting
 }) => {
     return (
         <div className="flex-1 relative bg-black rounded-[30px] border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl group p-4">
@@ -34,6 +36,7 @@ const CanvasPreview: React.FC<CanvasPreviewProps> = ({
                         assets={assets} 
                         activeIdx={activeIdx}
                         playlistCount={playlistLength}
+                        isAdjusting={isAdjusting}
                     />
                 </div>
             </div>

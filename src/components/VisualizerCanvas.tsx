@@ -4,6 +4,7 @@ import { drawBackground } from '../render/layers/background'
 import { drawParticles } from '../render/layers/particles'
 import { drawCover } from '../render/layers/cover'
 import { drawOverlay } from '../render/layers/overlay'
+import { drawGuides } from '../render/layers/guides'
 
 interface VisualizerProps {
     config: any;
@@ -12,9 +13,10 @@ interface VisualizerProps {
     assets: any;
     activeIdx?: number;
     playlistCount?: number;
+    isAdjusting?: boolean;
 }
 
-const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analyser, assets, activeIdx, playlistCount }) => {
+const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analyser, assets, activeIdx, playlistCount, isAdjusting }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const requestRef = useRef<number>()
     const particlesRef = useRef<any[]>([])
@@ -123,6 +125,9 @@ const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analys
         drawOverlay(ctx, w, h, assets, renderConfig, bass, sx, sy);
         
         ctx.restore();
+
+        // 4. ALIGNMENT GUIDES (TOP LAYER)
+        drawGuides(ctx, w, h, { ...config, show_guides: config.show_guides || isAdjusting });
     }
 
     return ( <canvas id="master-canvas" ref={canvasRef} className="w-full h-full object-cover" /> )

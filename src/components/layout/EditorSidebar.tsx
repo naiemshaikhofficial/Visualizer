@@ -5,7 +5,7 @@ import PremiereExport from '../sidebar/PremiereExport';
 import PresetLibrary from '../tabs/PresetLibrary';
 import EngineDesigner from '../tabs/EngineDesigner';
 import { Palette, Share2, Rocket, Zap, Cpu } from 'lucide-react';
-import { APP_IDENTITY } from '../../constants/branding';
+import { __SYS_IDENTITY__ } from '../../constants/branding';
 
 interface EditorSidebarProps {
     config: any;
@@ -86,6 +86,7 @@ const EditorSidebar: React.FC<EditorSidebarProps> = ({
                     <EngineDesigner 
                         config={config}
                         updateConfig={updateConfig}
+                        handleImage={handleImage}
                     />
                 ) : activeTab === 'DESIGN' ? (
                     <>
@@ -101,6 +102,7 @@ const EditorSidebar: React.FC<EditorSidebarProps> = ({
                             config={config} 
                             updateConfig={updateConfig} 
                             handleImage={handleImage} 
+                            assets={assets}
                         />
                     </>
                 ) : (
@@ -112,7 +114,7 @@ const EditorSidebar: React.FC<EditorSidebarProps> = ({
                 )}
 
                 <div className="text-center py-10 opacity-10 text-[8px] font-black uppercase tracking-[0.5em] mt-auto">
-                    {APP_IDENTITY.NAME} // {APP_IDENTITY.VERSION}
+                    {__SYS_IDENTITY__.n} // {__SYS_IDENTITY__.v}
                 </div>
             </div>
         </div>

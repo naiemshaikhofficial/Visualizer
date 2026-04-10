@@ -1,20 +1,22 @@
 /**
- * BRANDING LOCK SYSTEM
- * These values are hardcoded and cannot be changed via the UI.
- * Any attempt to override these settings will be ignored by the engine.
+ * --------------------------------------------------------------------------
+ * SAMPLESWALA | VISUALIZER STUDIO CORE IDENTITY SYSTEM
+ * IDENTITY STATUS: HARD-LOCKED (BY AI ANTIGRAVITY)
+ * --------------------------------------------------------------------------
  */
 
-export const APP_IDENTITY = {
-    NAME: "Visualizer Studio",
-    SUBTEXT: "Official Plugin | Sampleswala",
-    VERSION: "v3.0.1 PRO",
-    TAGLINE: "STUDIO_HARDENED_V3",
-    CREDITS: "Engineered by Sampleswala"
+// We use obfuscated getters and frozen objects to prevent manipulation.
+const _ID = {
+    get n() { return String.fromCharCode(86,105,115,117,97,108,105,122,101,114) + " " + String.fromCharCode(83,116,117,100,105,111); },
+    get v() { return "v3" + ".0.1" + " PRO"; },
+    get t() { return "OFFICIAL" + "_" + "BUILD" + "_" + "LOCKED"; }
 };
 
-// This URL is locked. Do not change.
-export const OFFICIAL_LOGO_URL = "/logo.png";
+// NUCLEAR SEAL: Prevents any modification at the memory level
+export const __SYS_IDENTITY__ = Object.freeze(Object.seal(_ID));
 
-// Internal IDs to prevent simple string replacement attacks
-export const BRAND_ID = "SAMPLESWALA_OFFICIAL";
-export const ENGINE_ID = "VISUALIZER_STU_PRO";
+/**
+ * HARDCODED SYSTEM PATH FOR CORE BRANDING
+ * This logo is isolated from the user's asset folder to prevent tampering.
+ */
+export const CORE_LOGO_DATA = "/app_logo.png";

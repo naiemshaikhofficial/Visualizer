@@ -6,9 +6,14 @@ interface EngineDesignerProps {
     config: any;
     updateConfig: (k: string, v: any) => void;
     handleImage: (e: React.ChangeEvent<HTMLInputElement>, type: string) => void;
+    setIsAdjusting?: (v: boolean) => void;
 }
 
-const EngineDesigner: React.FC<EngineDesignerProps> = ({ config, updateConfig, handleImage }) => {
+const EngineDesigner: React.FC<EngineDesignerProps> = ({ config, updateConfig, handleImage, setIsAdjusting }) => {
+    
+    const start = () => setIsAdjusting?.(true);
+    const end = () => setIsAdjusting?.(false);
+
     const MODES = [
         'STAR_CLOUD', '3D_GROUND', 'DNA_SPIRAL', 'WAVE_VALLEY', 'HEX_NET',
         'DIGITAL_RAIN', 'ENERGY_WHIPS', 'RADAR_SCAN', 'IRIS_BLADES', 'GLITCH_NOISE',
@@ -41,7 +46,7 @@ const EngineDesigner: React.FC<EngineDesignerProps> = ({ config, updateConfig, h
                 </div>
             </ControlCard>
 
-             {/* 2. COVER ART (Shifted to Visualizer Tab) */}
+             {/* 2. COVER ART */}
              <ControlCard title="Cover Art & Disc" icon={Disc}>
                 <div className="space-y-5">
                     <ProSwitch label="Show Cover Art" icon={Disc} active={config.show_cover !== false} onChange={(v) => updateConfig('show_cover', v)} />
@@ -60,10 +65,10 @@ const EngineDesigner: React.FC<EngineDesignerProps> = ({ config, updateConfig, h
                             </div>
 
                             <div className="space-y-4 pt-2 border-t border-white/5">
-                                <ProSlider label="Rotation Speed" value={config.v_spin || 0.2} max={10} step={0.1} onChange={(v) => updateConfig('v_spin', v)} suffix="RPM" />
-                                <ProSlider label="Beat Jump" value={config.v_pulse_str || 1} max={10} step={0.1} onChange={(v) => updateConfig('v_pulse_str', v)} />
-                                <ProSlider label="Static Angle" value={config.v_rot || 0} max={360} onChange={(v) => updateConfig('v_rot', v)} suffix="DEG" />
-                                <ProSlider label="Transparency" value={(config.v_opac ?? 1) * 100} max={100} onChange={(v) => updateConfig('v_opac', v / 100)} suffix="%" />
+                                <ProSlider label="Rotation Speed" value={config.v_spin || 0.2} max={10} step={0.1} onChange={(v) => updateConfig('v_spin', v)} onActionStart={start} onActionEnd={end} suffix="RPM" />
+                                <ProSlider label="Beat Jump" value={config.v_pulse_str || 1} max={10} step={0.1} onChange={(v) => updateConfig('v_pulse_str', v)} onActionStart={start} onActionEnd={end} />
+                                <ProSlider label="Static Angle" value={config.v_rot || 0} max={360} onChange={(v) => updateConfig('v_rot', v)} onActionStart={start} onActionEnd={end} suffix="DEG" />
+                                <ProSlider label="Transparency" value={(config.v_opac ?? 1) * 100} max={100} onChange={(v) => updateConfig('v_opac', v / 100)} onActionStart={start} onActionEnd={end} suffix="%" />
                             </div>
                         </>
                     )}
@@ -77,9 +82,9 @@ const EngineDesigner: React.FC<EngineDesignerProps> = ({ config, updateConfig, h
                     <div className="space-y-4">
                         <span className="text-[7px] font-black uppercase tracking-widest text-white/20 px-1">Size & Scale</span>
                         <div className="grid grid-cols-1 gap-4">
-                            <ProSlider label="Base Size" value={config.v_radius || 320} max={800} onChange={(v) => updateConfig('v_radius', v)} icon={Move} />
-                            <ProSlider label="Center Void" value={config.v_gap || 0} max={400} onChange={(v) => updateConfig('v_gap', v)} icon={Minimize2} />
-                            <ProSlider label="Shape Thickness" value={config.v_thickness || 4} max={50} onChange={(v) => updateConfig('v_thickness', v)} icon={Layers} />
+                            <ProSlider label="Base Size" value={config.v_radius || 320} max={800} onChange={(v) => updateConfig('v_radius', v)} onActionStart={start} onActionEnd={end} icon={Move} />
+                            <ProSlider label="Center Void" value={config.v_gap || 0} max={400} onChange={(v) => updateConfig('v_gap', v)} onActionStart={start} onActionEnd={end} icon={Minimize2} />
+                            <ProSlider label="Shape Thickness" value={config.v_thickness || 4} max={50} onChange={(v) => updateConfig('v_thickness', v)} onActionStart={start} onActionEnd={end} icon={Layers} />
                         </div>
                     </div>
 
@@ -87,12 +92,12 @@ const EngineDesigner: React.FC<EngineDesignerProps> = ({ config, updateConfig, h
                     <div className="pt-4 border-t border-white/5 space-y-4">
                         <span className="text-[7px] font-black uppercase tracking-widest text-white/20 px-1">Movement & Motion</span>
                         <div className="grid grid-cols-1 gap-4">
-                            <ProSlider label="Jump Strength" value={config.v_intensity || 1.6} max={10} step={0.1} onChange={(v) => updateConfig('v_intensity', v)} icon={Activity} />
-                            <ProSlider label="Smoothing" value={config.v_smoothing || 50} max={100} onChange={(v) => updateConfig('v_smoothing', v)} icon={Activity} suffix="%" />
-                            <ProSlider label="Rotation Speed" value={config.v_rotation || 1} max={50} step={0.1} onChange={(v) => updateConfig('v_rotation', v)} icon={Move} />
-                            <ProSlider label="Frequency Focus" value={config.v_freq_tilt || 0} min={-50} max={50} onChange={(v) => updateConfig('v_freq_tilt', v)} icon={Layers} />
-                            <ProSlider label="Detail Level" value={config.v_count || 64} max={256} onChange={(v) => updateConfig('v_count', v)} icon={Layers} />
-                            <ProSlider label="Shake Power" value={config.v_shake || 10} max={200} onChange={(v) => updateConfig('v_shake', v)} icon={Wind} />
+                            <ProSlider label="Jump Strength" value={config.v_intensity || 1.6} max={10} step={0.1} onChange={(v) => updateConfig('v_intensity', v)} onActionStart={start} onActionEnd={end} icon={Activity} />
+                            <ProSlider label="Smoothing" value={config.v_smoothing || 50} max={100} onChange={(v) => updateConfig('v_smoothing', v)} onActionStart={start} onActionEnd={end} icon={Activity} suffix="%" />
+                            <ProSlider label="Rotation Speed" value={config.v_rotation || 1} max={50} step={0.1} onChange={(v) => updateConfig('v_rotation', v)} onActionStart={start} onActionEnd={end} icon={Move} />
+                            <ProSlider label="Frequency Focus" value={config.v_freq_tilt || 0} min={-50} max={50} onChange={(v) => updateConfig('v_freq_tilt', v)} onActionStart={start} onActionEnd={end} icon={Layers} />
+                            <ProSlider label="Detail Level" value={config.v_count || 64} max={256} onChange={(v) => updateConfig('v_count', v)} onActionStart={start} onActionEnd={end} icon={Layers} />
+                            <ProSlider label="Shake Power" value={config.v_shake || 10} max={200} onChange={(v) => updateConfig('v_shake', v)} onActionStart={start} onActionEnd={end} icon={Wind} />
                         </div>
                     </div>
 
@@ -100,22 +105,10 @@ const EngineDesigner: React.FC<EngineDesignerProps> = ({ config, updateConfig, h
                     <div className="pt-4 border-t border-white/5 space-y-4">
                         <span className="text-[7px] font-black uppercase tracking-widest text-white/20 px-1">Glow & Colors</span>
                         <div className="grid grid-cols-1 gap-4">
-                            <ProSlider label="Glow Amount" value={config.v_glow || 40} max={200} onChange={(v) => updateConfig('v_glow', v)} icon={Sparkles} />
+                            <ProSlider label="Glow Amount" value={config.v_glow || 40} max={200} onChange={(v) => updateConfig('v_glow', v)} onActionStart={start} onActionEnd={end} icon={Sparkles} />
                             <div className="grid grid-cols-2 gap-3 pt-1">
                                 <ProSwitch label="Auto Color" icon={Sparkles} active={config.v_color_cycle} onChange={(v) => updateConfig('v_color_cycle', v)} />
                                 <ProSwitch label="Beat Flash" icon={Zap} active={config.v_color_flash} onChange={(v) => updateConfig('v_color_flash', v)} />
-                            </div>
-                            <div className="flex items-center justify-between mt-2">
-                                <span className="text-[8px] font-mono font-bold uppercase tracking-widest text-white/30 px-1">Theme Color</span>
-                                <div className="bg-white/5 border border-white/5 rounded-xl px-4 py-2 flex items-center gap-3 hover:border-white/20 transition-all">
-                                    <input 
-                                        type="color" 
-                                        value={config.accent || '#FFFFFF'} 
-                                        onChange={(e) => updateConfig('accent', e.target.value)} 
-                                        className="w-8 h-8 bg-transparent border-none cursor-pointer rounded-lg overflow-hidden" 
-                                    />
-                                    <span className="text-[9px] font-mono font-black text-white uppercase tracking-widest">{config.accent || '#FFFFFF'}</span>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -126,10 +119,10 @@ const EngineDesigner: React.FC<EngineDesignerProps> = ({ config, updateConfig, h
              <ControlCard title="Position on Screen" icon={Move}>
                 <div className="grid grid-cols-1 gap-6 pt-2">
                     <div className="grid grid-cols-2 gap-4">
-                        <ProSlider label="Up / Down" value={config.v_y} max={1080} onChange={(v) => updateConfig('v_y', v)} />
-                        <ProSlider label="Left / Right" value={config.v_x} max={1920} onChange={(v) => updateConfig('v_x', v)} />
+                        <ProSlider label="Up / Down" value={config.v_y} max={1080} onChange={(v) => updateConfig('v_y', v)} onActionStart={start} onActionEnd={end} />
+                        <ProSlider label="Left / Right" value={config.v_x} max={1920} onChange={(v) => updateConfig('v_x', v)} onActionStart={start} onActionEnd={end} />
                     </div>
-                    <ProSlider label="Perspective Tilt" value={config.v_tilt || 0} min={-50} max={50} onChange={(v) => updateConfig('v_tilt', v)} icon={Move} />
+                    <ProSlider label="Perspective Tilt" value={config.v_tilt || 0} min={-50} max={50} onChange={(v) => updateConfig('v_tilt', v)} onActionStart={start} onActionEnd={end} icon={Move} />
                 </div>
             </ControlCard>
         </div>

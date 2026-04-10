@@ -7,7 +7,7 @@ import TextManager from './sidebar/TextManager'
 import BrandingManager from './sidebar/BrandingManager'
 import FxManager from './sidebar/FxManager'
 import VoiceTagManager from './sidebar/VoiceTagManager'
-import { APP_IDENTITY } from '../constants/branding'
+import { __SYS_IDENTITY__ } from '../constants/branding'
 
 interface SidebarProps {
     config: any;
@@ -24,8 +24,8 @@ const StudioSidebar: React.FC<SidebarProps> = ({ config, updateConfig, handleIma
             {/* NEW GEN SIDEBAR HEADER (LOCKED) */}
             <div className="px-2 py-4 border-b border-white/5 mb-8 flex items-center justify-between">
                 <div>
-                  <h1 className="text-[12px] font-mono font-black tracking-[0.4em] text-white">{APP_IDENTITY.TAGLINE}</h1>
-                  <p className="text-[7px] font-mono text-white/30 uppercase tracking-widest mt-1">Official Build | {APP_IDENTITY.VERSION}</p>
+                  <h1 className="text-[12px] font-mono font-black tracking-[0.4em] text-white">{__SYS_IDENTITY__.t}</h1>
+                  <p className="text-[7px] font-mono text-white/30 uppercase tracking-widest mt-1">Official Build | {__SYS_IDENTITY__.v}</p>
                 </div>
                 <div className="flex gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-white" />
