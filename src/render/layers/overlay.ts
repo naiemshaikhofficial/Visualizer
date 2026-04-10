@@ -37,10 +37,24 @@ export const drawOverlay = (ctx: CanvasRenderingContext2D, w: number, h: number,
         if (config.social_shake !== false) ctx.translate(sx, sy);
         const ytX = config.yt_x ?? (isPortrait ? centerX - 80 : 1600);
         const ytY = config.yt_y ?? (isPortrait ? 950 : 950);
+        const s = config.yt_size || 20;
         ctx.translate(ytX, ytY);
-        ctx.font = `900 ${config.yt_size || 20}px Inter, sans-serif`; ctx.fillStyle='white'; 
-        ctx.fillText(config.yt_handle || '@YOUTUBE', 40, (config.yt_size || 20) / 3);
-        ctx.fillStyle=config.accent || '#FFFFFF'; ctx.fillRect(0, -((config.yt_size || 20) * 0.75), config.yt_size || 20, config.yt_size || 20); ctx.restore();
+
+        // Draw YT Icon
+        ctx.fillStyle = '#FF0000';
+        ctx.beginPath();
+        const r = s/4;
+        ctx.roundRect(0, -s*0.75, s*1.4, s, r);
+        ctx.fill();
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        ctx.moveTo(s*0.5, -s*0.55); ctx.lineTo(s*0.5, -s*0.15); ctx.lineTo(s*0.9, -s*0.35);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.font = `900 ${s}px Inter, sans-serif`; ctx.fillStyle='white'; 
+        ctx.fillText(config.yt_handle || '@YOUTUBE', s * 1.8, s * 0.1);
+        ctx.restore();
     }
 
     // INSTAGRAM
@@ -49,10 +63,18 @@ export const drawOverlay = (ctx: CanvasRenderingContext2D, w: number, h: number,
         if (config.social_shake !== false) ctx.translate(sx, sy);
         const igX = config.ig_x ?? (isPortrait ? centerX - 80 : 1600);
         const igY = config.ig_y ?? (isPortrait ? 1000 : 1000);
+        const s = config.ig_size || 20;
         ctx.translate(igX, igY);
-        ctx.font = `900 ${config.ig_size || 20}px Inter, sans-serif`; ctx.fillStyle='white'; 
-        ctx.fillText(config.ig_handle || '@INSTA', 40, (config.ig_size || 20) / 3);
-        ctx.fillStyle='#FFFFFF'; ctx.fillRect(0, -((config.ig_size || 20) * 0.75), config.ig_size || 20, config.ig_size || 20); ctx.restore();
+        
+        // Draw Insta Icon
+        ctx.strokeStyle = 'white'; ctx.lineWidth = s/8;
+        ctx.strokeRect(0, -s*0.75, s, s);
+        ctx.beginPath(); ctx.arc(s/2, -s/4, s/4, 0, Math.PI*2); ctx.stroke();
+        ctx.fillStyle = 'white'; ctx.beginPath(); ctx.arc(s*0.8, -s*0.6, s/12, 0, Math.PI*2); ctx.fill();
+
+        ctx.font = `900 ${s}px Inter, sans-serif`; ctx.fillStyle='white'; 
+        ctx.fillText(config.ig_handle || '@INSTA', s * 1.4, s * 0.1);
+        ctx.restore();
     }
 
     // METADATA BADGE (PACK INFO)
