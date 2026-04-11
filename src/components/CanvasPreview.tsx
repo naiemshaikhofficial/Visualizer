@@ -5,6 +5,7 @@ import InteractionLayer from './InteractionLayer';
 
 interface CanvasPreviewProps {
     config: any;
+    isLicensed: boolean | null;
     isPlaying: boolean;
     analyser: AnalyserNode | null;
     assets: any;
@@ -18,6 +19,7 @@ interface CanvasPreviewProps {
 
 const CanvasPreview: React.FC<CanvasPreviewProps> = ({
     config,
+    isLicensed,
     isPlaying,
     analyser,
     assets,
@@ -34,6 +36,7 @@ const CanvasPreview: React.FC<CanvasPreviewProps> = ({
                 <div className="w-full h-full flex items-center justify-center overflow-hidden rounded-xl border border-white/5">
                     <VisualizerCanvas 
                         config={config} 
+                        isLicensed={isLicensed}
                         isPlaying={isPlaying} 
                         analyser={analyser} 
                         assets={assets} 

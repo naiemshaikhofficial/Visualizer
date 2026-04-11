@@ -49,8 +49,8 @@ export const usePlaylist = () => {
         setPlaylist(prev => prev.filter((_, i) => i !== idx));
     };
 
-    const addTracks = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newFiles = Array.from(e.target.files || []); 
+    const addTracks = (input: React.ChangeEvent<HTMLInputElement> | File[]) => {
+        const newFiles = Array.isArray(input) ? input : Array.from(input.target.files || []); 
         setPlaylist(prev => { 
             let updated = [...prev]; 
             newFiles.forEach(nf => { 

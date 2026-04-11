@@ -34,15 +34,25 @@ const PresetLibrary: React.FC<PresetLibraryProps> = ({ config, updateConfig, set
     }, [filteredPresets, limit]);
 
     const applyPreset = (presetConfig: any) => {
+        // FORCE SYNC: Reset engine state to exactly what's in the preset
+        // To avoid "leftover" parameters from previous modes
+        const cleanConfig = { ...presetConfig };
         setConfig((prev: any) => ({
             ...prev,
-            ...presetConfig
+            ...cleanConfig
         }));
     };
 
     const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (!file) return;
+
+        // Verify Extension for Branding Integrity
+        if (!file.name.endsWith('.sampleswala') && !file.name.endsWith('.json')) {
+            alert("UNSUPPORTED_FILE_TYPE: PLEASE_USE_.SAMPLESWALA_PRESETS");
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = (ev) => {
             try {
@@ -50,7 +60,7 @@ const PresetLibrary: React.FC<PresetLibraryProps> = ({ config, updateConfig, set
                 applyPreset(json);
                 alert("PRESET_IMPORTED_SUCCESSFULLY");
             } catch (err) {
-                alert("INVALID_PRESET_FILE");
+                alert("INVALID_PRESET_ENGINE_DNA");
             }
         };
         reader.readAsText(file);
@@ -60,7 +70,8 @@ const PresetLibrary: React.FC<PresetLibraryProps> = ({ config, updateConfig, set
         const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(config, null, 2));
         const downloadAnchorNode = document.createElement('a');
         downloadAnchorNode.setAttribute("href", dataStr);
-        downloadAnchorNode.setAttribute("download", `preset_${Date.now()}.json`);
+        // Using branded extension
+        downloadAnchorNode.setAttribute("download", `VS_Design_${Date.now()}.sampleswala`);
         document.body.appendChild(downloadAnchorNode);
         downloadAnchorNode.click();
         downloadAnchorNode.remove();
@@ -74,15 +85,15 @@ const PresetLibrary: React.FC<PresetLibraryProps> = ({ config, updateConfig, set
                     onClick={() => fileInputRef.current?.click()}
                     className="py-3 bg-white/5 border border-white/10 rounded-2xl text-[8px] font-mono font-black uppercase tracking-widest hover:bg-white/10 hover:border-white/40 transition-all flex items-center justify-center gap-2"
                 >
-                    <FileUp size={14} className="text-white/40" /> Import JSON
+                    <FileUp size={14} className="text-white/40" /> Load .sampleswala
                 </button>
                 <button 
                     onClick={handleExport}
                     className="py-3 bg-white/5 border border-white/10 rounded-2xl text-[8px] font-mono font-black uppercase tracking-widest hover:bg-white/10 hover:border-white/40 transition-all flex items-center justify-center gap-2"
                 >
-                    <Download size={14} className="text-white/40" /> Export Current
+                    <Download size={14} className="text-white/40" /> Export Design
                 </button>
-                <input type="file" ref={fileInputRef} onChange={handleImport} accept=".json" className="hidden" />
+                <input type="file" ref={fileInputRef} onChange={handleImport} accept=".sampleswala,.json" className="hidden" />
             </div>
 
             <div className="px-1 space-y-4">
@@ -129,7 +140,7 @@ const PresetLibrary: React.FC<PresetLibraryProps> = ({ config, updateConfig, set
                             exit={{ opacity: 0, scale: 0.9 }}
                             transition={{ duration: 0.2, delay: (idx % 20) * 0.01 }}
                             key={preset.id}
-                            onClick={() => applyPreset(preset.config)}
+                            onClick={() => applyPreset({ ...preset.config, id: preset.id })}
                             className={`group relative aspect-[4/3] bg-black border-[1.5px] rounded-2xl overflow-hidden cursor-pointer transition-all ${config.v_mode === preset.config.v_mode && config.accent === preset.config.accent ? 'border-white shadow-[0_0_20px_rgba(255,255,255,0.1)]' : 'border-white/10 hover:border-white/30'}`}
                         >
                             <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity">

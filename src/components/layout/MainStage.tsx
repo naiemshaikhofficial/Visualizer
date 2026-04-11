@@ -4,6 +4,7 @@ import MediaControls from '../MediaControls';
 
 interface MainStageProps {
     config: any;
+    isLicensed: boolean | null;
     isPlaying: boolean;
     analyser: AnalyserNode | null;
     assets: any;
@@ -25,13 +26,14 @@ interface MainStageProps {
 }
 
 const MainStage: React.FC<MainStageProps> = ({
-    config, isPlaying, analyser, assets, activeIdx, playlist, isRecording, recordProgress, isAdjusting,
+    config, isLicensed, isPlaying, analyser, assets, activeIdx, playlist, isRecording, recordProgress, isAdjusting,
     currentTime, duration, audioRef, togglePlay, startExport, stopExport, seek, skipNext, skipPrev, updateConfig
 }) => {
     return (
         <div className="flex-1 flex flex-col gap-3 overflow-hidden px-1">
             <CanvasPreview 
                 config={config}
+                isLicensed={isLicensed}
                 isPlaying={isPlaying}
                 analyser={analyser}
                 assets={assets}

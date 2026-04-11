@@ -8,6 +8,14 @@ export const useAuth = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        // --- 1. ELECTRON DEEP LINK LISTENER ---
+        if (typeof window !== 'undefined' && 'electronAPI' in window) {
+            // This would normally listen for IPC, but for simplicity
+            // Supabase handles the session from the URL hash automatically
+            // if we are on a web-view. For .exe, we might need to reload.
+        }
+
+        // --- 2. REGULAR AUTH LOGIC ---
         // Safety timeout to prevent infinite black screen
         const timeout = setTimeout(() => {
             if (loading) {
@@ -49,12 +57,39 @@ export const useAuth = () => {
         }
     }, [loading]);
 
+    const [isLicensed, setIsLicensed] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        const verifyLicense = async (userEmail: string) => {
+            try {
+                const { data, error } = await supabase
+                    .from('software_orders')
+                    .select('*')
+                    .eq('user_email', userEmail)
+                    .eq('status', 'complete')
+                    .or('software_name.eq.Visualizer Studio,software_name.eq.VisualizerStudio');
+
+                if (error) throw error;
+                setIsLicensed(data && data.length > 0);
+            } catch (err) {
+                console.error("License Check Error:", err);
+                setIsLicensed(false);
+            }
+        };
+
+        if (user) verifyLicense(user.email!);
+        else if (!loading) setIsLicensed(null);
+    }, [user, loading]);
+
     const loginWithGoogle = async () => {
+        const isElectron = /Electron/.test(navigator.userAgent);
+        const redirectUrl = isElectron 
+                ? 'visualizerstudio://auth-callback' 
+                : (window.location.origin.includes('localhost') ? window.location.origin : 'http://localhost:5000');
+
         const { error } = await supabase.auth.signInWithOAuth({
             provider: 'google',
-            options: {
-                redirectTo: window.location.origin
-            }
+            options: { redirectTo: redirectUrl }
         });
         if (error) throw error;
     };
@@ -64,5 +99,5 @@ export const useAuth = () => {
         if (error) throw error;
     };
 
-    return { user, session, loading, loginWithGoogle, logout };
+    return { user, session, loading, loginWithGoogle, logout, isLicensed };
 };

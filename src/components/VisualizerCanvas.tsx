@@ -10,6 +10,7 @@ import { drawPostProcessing } from '../render/layers/fx'
 
 interface VisualizerProps {
     config: any;
+    isLicensed: boolean | null;
     isPlaying: boolean;
     analyser: AnalyserNode | null;
     assets: any;
@@ -18,10 +19,11 @@ interface VisualizerProps {
     isAdjusting?: boolean;
 }
 
-const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analyser, assets, activeIdx, playlistCount, isAdjusting }) => {
+const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isLicensed, isPlaying, analyser, assets, activeIdx, playlistCount, isAdjusting }) => {
     const canvasRef = useRef<HTMLCanvasElement>(null)
     const requestRef = useRef<number>()
     const particlesRef = useRef<any[]>([])
+    const timeRef = useRef<number>(0) // Relative animation clock
 
     useMemo(() => {
         const pArr = []
@@ -38,7 +40,13 @@ const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analys
     }, [])
 
     useEffect(() => {
-        const render = () => {
+        let lastTime = performance.now();
+        const render = (now: number) => {
+            if (isPlaying) {
+                const dt = (now - lastTime) / 1000;
+                timeRef.current += dt;
+            }
+            lastTime = now;
             draw()
             requestRef.current = requestAnimationFrame(render)
         }
@@ -53,26 +61,24 @@ const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analys
         if (!ctx) return
 
         const w = 1920, h = 1080
-        canvas.width = w; canvas.height = h;
+        if (canvas.width !== w) { canvas.width = w; canvas.height = h; }
 
         const data = analyser ? new Uint8Array(analyser.frequencyBinCount) : null
         if (analyser) analyser.getByteFrequencyData(data!)
 
         const react = config.v_react ?? 1.0
-        const tilt = config.v_freq_tilt || 0; // -50 (Bass) to 50 (High)
-        const focusBin = Math.floor(Math.max(0, Math.min(127, 20 + tilt))); // Base center is index 20
-        
+        const tilt = config.v_freq_tilt || 0;
+        const focusBin = Math.floor(Math.max(0, Math.min(127, 20 + tilt)));
         const rawBass = (data ? (data[focusBin] / 255) : 0) * react;
         
-        // SMOOTHING LOGIC
         const smoothFactor = (config.v_smoothing || 20) / 100;
         const currentBass = (window as any)._lastBass || 0;
         const bass = currentBass + (rawBass - currentBass) * (1 - smoothFactor);
         (window as any)._lastBass = bass;
 
-        const beat = (data ? (data[10] / 255) : 0) * react
-        const time = (Date.now() / 1000) * (config.v_rotation || 1);
-        const { cover } = assets
+        const beat = (data ? (data[10] / 255) : 0) * react;
+        const time = timeRef.current; // Use the relative clock
+        const { cover } = assets;
 
         // IMPACT SHAKE CALCULATION
         let sx = 0, sy = 0;
@@ -90,7 +96,7 @@ const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analys
             finalAccent = '#FFFFFF';
         }
 
-        const renderConfig = { ...config, accent: finalAccent };
+        const renderConfig = { ...config, accent: finalAccent, isLicensed };
 
         // 1. BACKGROUND
         ctx.fillStyle = '#050505'; ctx.fillRect(-100, -100, w+200, h+200);

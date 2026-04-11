@@ -30,9 +30,15 @@ const AuthWall: React.FC<AuthWallProps> = ({ onLoginSuccess }) => {
 
     const handleGoogleLogin = async () => {
         try {
+            // Check if running in Electron
+            const isElectron = /Electron/.test(navigator.userAgent);
+            const redirectUrl = isElectron 
+                ? 'visualizerstudio://auth-callback' 
+                : (window.location.origin.includes('localhost') ? window.location.origin : 'http://localhost:5000');
+
             const { error } = await supabase.auth.signInWithOAuth({
                 provider: 'google',
-                options: { redirectTo: window.location.origin }
+                options: { redirectTo: redirectUrl }
             });
             if (error) throw error;
         } catch (err: any) {

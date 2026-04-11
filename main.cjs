@@ -1,35 +1,68 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, shell } = require('electron');
 const path = require('path');
 
+// 1. DEFINE PROTOCOL
+if (process.defaultApp) {
+  if (process.argv.length >= 2) {
+    app.setAsDefaultProtocolClient('visualizerstudio', process.execPath, [path.resolve(process.argv[1])]);
+  }
+} else {
+  app.setAsDefaultProtocolClient('visualizerstudio');
+}
+
+let mainWindow;
+
 function createWindow() {
-  const win = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
     title: "Visualizer Studio",
     icon: path.join(__dirname, 'public/favicon.ico'),
     backgroundColor: '#050505',
+    frame: false, // Make it frameless for custom title bar
     webPreferences: {
-      nodeIntegration: false,
-      contextIsolation: true,
+      nodeIntegration: true, // Enable for desktop features
+      contextIsolation: false, // For easier IPC in this build
     },
-    autoHideMenuBar: true
   });
 
   // Load from local dist or dev server
   if (process.env.NODE_ENV === 'development') {
-    win.loadURL('http://localhost:5000');
+    mainWindow.loadURL('http://localhost:5000');
   } else {
-    win.loadFile(path.join(__dirname, 'dist_web/index.html'));
+    mainWindow.loadFile(path.join(__dirname, 'dist_web/index.html'));
   }
+
+  // 2. HANDLE EXTERNAL LINKS (Open in System Browser)
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: 'deny' };
+  });
 }
 
-app.whenReady().then(() => {
-  createWindow();
+// 3. HANDLE DEEP LINK EVENTS (For Windows)
+const gotTheLock = app.requestSingleInstanceLock();
 
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore();
+      mainWindow.focus();
+      
+      // Handle the URL from command line
+      const url = commandLine.pop();
+      if (url.includes('visualizerstudio://')) {
+          mainWindow.webContents.send('auth-callback', url);
+      }
+    }
   });
-});
+
+  app.whenReady().then(() => {
+    createWindow();
+  });
+}
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();

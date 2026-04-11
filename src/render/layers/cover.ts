@@ -22,8 +22,16 @@ export const drawCover = (ctx: CanvasRenderingContext2D, w: number, h: number, c
         artS += Math.sin(time * 2) * 20 + (bass * 30 * strength);
     }
 
-    ctx.save(); 
-    // Impact Shake
+    ctx.save();
+    
+    // Impact Shake (Localized to cover)
+    if (config.v_shake_str > 0 && bass > 0.5) {
+        const csx = (Math.random() - 0.5) * config.v_shake_str * bass;
+        const csy = (Math.random() - 0.5) * config.v_shake_str * bass;
+        ctx.translate(csx, csy);
+    }
+
+    // Global Impact Shake
     if (config.cover_shake !== false) {
         ctx.translate(sx, sy);
     }
@@ -35,9 +43,10 @@ export const drawCover = (ctx: CanvasRenderingContext2D, w: number, h: number, c
     ctx.rotate((config.v_rot || 0) * Math.PI / 180);
 
     // AUTO ROTATE LOGIC
-    // v_spin is in RPM-ish units from UI.
-    const spinFactor = config.v_spin ?? 0.5;
-    ctx.rotate(time * spinFactor);
+    if (config.v_auto_spin !== false) {
+        const rpm = config.v_spin || 0.5;
+        ctx.rotate(time * rpm * 5); // Increased multiplier for better UI response
+    }
 
     ctx.globalAlpha = config.v_opac ?? 1.0;
     
@@ -58,16 +67,18 @@ export const drawCover = (ctx: CanvasRenderingContext2D, w: number, h: number, c
     ctx.restore();
 
     // Draw Border (Now inside the same rotation context)
-    ctx.beginPath();
-    ctx.strokeStyle = config.accent || '#FFFFFF';
-    const bThick = (config.v_border ?? 6) + (beat * (config.v_border ? config.v_border / 2 : 10));
-    ctx.lineWidth = bThick;
-    
-    if (isSquare) {
-        ctx.strokeRect(-artS/2, -artS/2, artS, artS);
-    } else {
-        ctx.arc(0, 0, artS/2 + 2, 0, Math.PI * 2);
-        ctx.stroke();
+    if (config.show_v_border !== false) {
+        ctx.beginPath();
+        ctx.strokeStyle = config.v_border_color || config.accent || '#FFFFFF';
+        const bThick = (config.v_border ?? 6) + (beat * (config.v_border ? config.v_border/2 : 10));
+        ctx.lineWidth = bThick;
+        
+        if (isSquare) {
+            ctx.strokeRect(-artS/2, -artS/2, artS, artS);
+        } else {
+            ctx.arc(0, 0, artS/2 + 2, 0, Math.PI * 2);
+            ctx.stroke();
+        }
     }
 
     ctx.restore();
