@@ -21,11 +21,12 @@ interface MainStageProps {
     seek: (t: number) => void;
     skipNext: () => void;
     skipPrev: () => void;
+    updateConfig: (k: string, v: any) => void;
 }
 
 const MainStage: React.FC<MainStageProps> = ({
     config, isPlaying, analyser, assets, activeIdx, playlist, isRecording, recordProgress, isAdjusting,
-    currentTime, duration, audioRef, togglePlay, startExport, stopExport, seek, skipNext, skipPrev
+    currentTime, duration, audioRef, togglePlay, startExport, stopExport, seek, skipNext, skipPrev, updateConfig
 }) => {
     return (
         <div className="flex-1 flex flex-col gap-3 overflow-hidden px-1">
@@ -39,6 +40,7 @@ const MainStage: React.FC<MainStageProps> = ({
                 isRecording={isRecording}
                 recordProgress={recordProgress}
                 isAdjusting={isAdjusting}
+                updateConfig={updateConfig}
             />
             <MediaControls 
                 isPlaying={isPlaying}

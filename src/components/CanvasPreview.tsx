@@ -1,6 +1,7 @@
 import React from 'react';
 import { Zap } from 'lucide-react';
 import VisualizerCanvas from './VisualizerCanvas';
+import InteractionLayer from './InteractionLayer';
 
 interface CanvasPreviewProps {
     config: any;
@@ -12,6 +13,7 @@ interface CanvasPreviewProps {
     isRecording: boolean;
     recordProgress: number;
     isAdjusting: boolean;
+    updateConfig: (k: string, v: any) => void;
 }
 
 const CanvasPreview: React.FC<CanvasPreviewProps> = ({
@@ -23,7 +25,8 @@ const CanvasPreview: React.FC<CanvasPreviewProps> = ({
     playlistLength,
     isRecording,
     recordProgress,
-    isAdjusting
+    isAdjusting,
+    updateConfig
 }) => {
     return (
         <div className="flex-1 relative bg-black rounded-[30px] border border-white/10 flex items-center justify-center overflow-hidden shadow-2xl group p-4">
@@ -37,6 +40,11 @@ const CanvasPreview: React.FC<CanvasPreviewProps> = ({
                         activeIdx={activeIdx}
                         playlistCount={playlistLength}
                         isAdjusting={isAdjusting}
+                    />
+                    <InteractionLayer 
+                        config={config} 
+                        updateConfig={updateConfig} 
+                        format={config.format} 
                     />
                 </div>
             </div>

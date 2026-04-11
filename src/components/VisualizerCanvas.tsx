@@ -108,7 +108,7 @@ const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analys
         applyMotionEngine(ctx, w, h, renderConfig, bass, time);
 
         // 2. PARTICLES (React to dynamic color)
-        drawParticles(ctx, w, h, particlesRef.current, renderConfig, bass, sx, sy, time);
+        drawParticles(ctx, w, h, particlesRef.current, renderConfig, bass, sx, sy);
 
         // 3. PERSPECTIVE TRANSFORM (Apply 3D tilt to Visualizer, Cover & Overlay)
         ctx.save();
@@ -127,7 +127,7 @@ const VisualizerCanvas: React.FC<VisualizerProps> = ({ config, isPlaying, analys
         drawCover(ctx, w, h, cover, renderConfig, bass, beat, time, sx, sy);
 
         // TEXT & SOCIAL OVERLAYS
-        drawOverlay(ctx, w, h, assets, renderConfig, bass, sx, sy, time);
+        drawOverlay(ctx, w, h, assets, renderConfig, bass, sx, sy);
         
         ctx.restore();
 

@@ -15,8 +15,10 @@ const _ID = {
 // NUCLEAR SEAL: Prevents any modification at the memory level
 export const __SYS_IDENTITY__ = Object.freeze(Object.seal(_ID));
 
+export const CORE_LOGO_DATA = "/Picsart_26-04-11_08-03-24-637.png";
+
 /**
- * HARDCODED SYSTEM PATH FOR CORE BRANDING
- * This logo is isolated from the user's asset folder to prevent tampering.
+ * PRODUCTION EXE BRANDING
+ * This logo is dedicated to the application shell and launcher.
  */
-export const CORE_LOGO_DATA = "/app_logo.png";
+export const APP_EXE_LOGO = "/app_logo.png";

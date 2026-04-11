@@ -1,5 +1,6 @@
-import { Youtube, Instagram, Minus, Square, X, RotateCcw, Undo2, Redo2 } from 'lucide-react';
+import { Youtube, Instagram, Minus, Square, X, RotateCcw, Undo2, Redo2, LogOut, User as UserIcon } from 'lucide-react';
 import { __SYS_IDENTITY__, CORE_LOGO_DATA } from '../constants/branding';
+import { useAuth } from '../hooks/useAuth';
 
 interface HeaderProps {
     format: 'LANDSCAPE' | 'PORTRAIT';
@@ -17,6 +18,7 @@ const Header: React.FC<HeaderProps> = ({
     format, updateConfig, setSidebarTab, activeTab, 
     undo, redo, canUndo, canRedo, reset 
 }) => {
+    const { user, logout } = useAuth();
     return (
         <div className="flex items-center justify-between mb-3 shrink-0 px-6 py-4 border-b border-white/10 bg-black/80 backdrop-blur-3xl drag-region">
             {/* LEFT: APP BRANDING & HISTORY */}
@@ -85,6 +87,21 @@ const Header: React.FC<HeaderProps> = ({
                         className={`px-6 py-2 rounded-[14px] text-[8px] font-mono font-black uppercase transition-all flex items-center gap-2 ${format === 'PORTRAIT' ? 'bg-white text-black shadow-xl' : 'text-white/20 hover:text-white hover:bg-white/5'}`}
                     >
                         Reel
+                    </button>
+                </div>
+
+                {/* USER & LOGOUT */}
+                <div className="flex items-center gap-4 pl-6 border-l border-white/10">
+                    <div className="flex flex-col items-end">
+                        <p className="text-[8px] font-mono text-white/30 uppercase tracking-tighter">Authorized User</p>
+                        <p className="text-[10px] font-bold truncate max-w-[120px]">{user?.email?.split('@')[0]}</p>
+                    </div>
+                    <button 
+                        onClick={() => { if(confirm("LOGOUT FROM STUDIO?")) logout() }}
+                        className="p-2.5 bg-white/5 hover:bg-red-500/10 hover:text-red-500 rounded-xl transition-all border border-white/5"
+                        title="Logout"
+                    >
+                        <LogOut size={16} />
                     </button>
                 </div>
 
